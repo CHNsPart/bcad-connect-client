@@ -23,7 +23,7 @@ export default function Login() {
     regEmail: '',
     regPassword: '',
     conPassword: '',
-    picturePath: '',
+    picturePath: null,
     connections: '',
     sex: '',
     worksAt: '',
@@ -43,6 +43,13 @@ export default function Login() {
         [name]: value,
       }));
   };
+
+  const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const pic =  event.target.files[0];
+      setRegisterState({ ...registerState, picturePath: pic });
+    }
+  }
 
   const handleRegInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -72,31 +79,69 @@ export default function Login() {
       }
   };
 
-  const handleRegister = async (e:Event) => {
-    e.preventDefault()
+
+  const handleRegister = async (e: Event) => {
+    e.preventDefault();
     setLoading(true);
+  
     try {
       if (registerState.regPassword === registerState.conPassword) {
-        await register({
-          firstName: registerState.firstName ,
-          lastName: registerState.lastName ,
-          email: registerState.regEmail ,
-          password: registerState.regPassword ,
-        })
-
-        setRegisterMode(false)
-        setError("Created! Now login please")
-
+        const formData = new FormData();
+        formData.append('firstName', registerState.firstName);
+        formData.append('lastName', registerState.lastName);
+        formData.append('email', registerState.regEmail);
+        formData.append('password', registerState.regPassword);
+        
+        // Log FormData to verify that picturePath is set correctly
+        console.log(formData);
+  
+        if (registerState.picturePath) {
+          formData.append('picturePath', registerState.picturePath);
+        }
+  
+        await register(formData);
+  
+        setRegisterMode(false);
+        setError('Created! Now login please');
       } else {
-        setError("Password did not match");
+        setError('Password did not match');
       }
-
-    } catch (error:any) {
+    } catch (error: any) {
       setError(error.toString());
     } finally {
       setLoading(false);
     }
   };
+  
+  
+  
+
+  // const handleRegister = async (e:Event) => {
+  //   e.preventDefault()
+  //   setLoading(true);
+  //   try {
+  //     if (registerState.regPassword === registerState.conPassword) {
+  //       await register({
+  //         firstName: registerState.firstName ,
+  //         lastName: registerState.lastName ,
+  //         email: registerState.regEmail ,
+  //         password: registerState.regPassword ,
+  //         picturePath: registerState.picturePath
+  //       })
+
+  //       setRegisterMode(false)
+  //       setError("Created! Now login please")
+
+  //     } else {
+  //       setError("Password did not match");
+  //     }
+
+  //   } catch (error:any) {
+  //     setError(error.toString());
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <section className="h-screen flex flex-col md:flex-row justify-center md:justify-between items-center">
@@ -110,7 +155,7 @@ export default function Login() {
             <CardTitle>BCAD Connect</CardTitle>
             <CardDescription>Bridge between BD and CA</CardDescription>
           </CardHeader>
-          <form>
+          <form encType="multipart/form-data">
             <CardContent className="flex flex-col gap-5">
               { !registerMode ? 
                 (
@@ -188,6 +233,18 @@ export default function Login() {
                           onChange={handleRegInputChange}
                           autoComplete='off'
                           placeholder="Email"
+                        /> 
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label htmlFor="picturePath">Your picture</Label>
+                        <Input
+                          required
+                          type="file"
+                          name="picturePath"
+                          id="picturePath"
+                          accept="image/png, image/jpeg"
+                          onChange={onImageChange}
+                          autoComplete='off'
                         /> 
                     </div>
                     <div className="flex flex-col gap-2">

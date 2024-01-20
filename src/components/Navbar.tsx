@@ -11,6 +11,11 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [userProfile, setUserProfile] = useState<RegisterState | null>(null);
   const [uID, setuID] = useState("");
+  const [active, setActive] = useState({
+    post: false,
+    connections: false,
+    profile: true || false
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +32,8 @@ const Navbar = () => {
     fetchData();
   }, [uID]);
 
+  console.log(active)
+
   const renderDesktopNav = () => (
     <nav className="border-r w-full min-h-screen lg:flex flex-col justify-around hidden">
       <div className="mx-auto flex p-4 md:p-8">
@@ -35,13 +42,49 @@ const Navbar = () => {
       {userProfile ? (
         <>
           <div className="flex flex-col h-full justify-between">
-            <ul className="flex flex-col items-center justify-start h-fit w-full border-t border-b gap-5 p-5">
-              <li className="w-full"><Button onClick={() => navigate("/bcad/post")} variant={"outline"} className="w-full">Post</Button></li>
-              <li className="w-full"><Button onClick={() => navigate(`/bcad/${uID}/connections/`)} variant={"outline"} className="w-full">Connections</Button></li>
-              <li className="w-full"><Button onClick={() => navigate(`/bcad/${uID}`)} variant={"outline"} className="w-full">Profile</Button></li>
+            <ul className="flex flex-col items-center justify-start h-fit w-full border-t gap-5 p-5">
+              <li className="w-full">
+                <Button 
+                  onClick={()=>{
+                    setActive({
+                      post: true,
+                      connections: false,
+                      profile: false,
+                    });
+                    navigate("/bcad/post")
+                  }}
+                  variant={ active.post ? "default" : "outline" } 
+                  className={'w-full'}>Post</Button>
+              </li>
+              <li className="w-full">
+                <Button 
+                  onClick={()=>{
+                    setActive({
+                      post: false,
+                      connections: true,
+                      profile: false,
+                    });
+                    navigate(`/bcad/${uID}/connections/`)
+                  }}
+                  variant={ active.connections ? "default" : "outline" } 
+                  className="w-full">Connections</Button>
+              </li>
+              <li className="w-full">
+                <Button 
+                  onClick={()=>{
+                    setActive({
+                      post: false,
+                      connections: false,
+                      profile: true,
+                    });
+                    navigate(`/bcad/${uID}`)
+                  }}
+                  variant={ active.profile ? "default" : "outline" } 
+                  className="w-full">Profile</Button>
+              </li>
             </ul>
           </div>
-          <div className="w-full px-5 border-t">
+          <div className="w-full px-5 pt-5 border-t">
             <Button variant={"secondary"} className="flex flex-col items-center justify-start w-full">Logout</Button>
           </div>
         </>
@@ -62,13 +105,43 @@ const renderTabletNav = () => (
         <>
         <div className="flex flex-col items-center w-full gap-5 py-5">
           <div className="flex flex-col justify-center items-center gap-5">
-            <Button onClick={() => navigate("/bcad/post")} variant={"outline"} className="rounded-full">
+            <Button 
+              onClick={()=>{
+                setActive({
+                  post: true,
+                  connections: false,
+                  profile: false,
+                });
+                navigate("/bcad/post")
+              }}
+              variant={ active.post ? "default" : "outline" } 
+              className="rounded-full">
                 <RxShare1 size={"30"} />
             </Button>
-            <Button onClick={() => navigate(`/bcad/${uID}/connections/`)} variant={"outline"} className="rounded-full">
+            <Button 
+              onClick={()=>{
+                setActive({
+                  post: false,
+                  connections: true,
+                  profile: false,
+                });
+                navigate(`/bcad/${uID}/connections/`)
+              }}
+              variant={ active.connections ? "default" : "outline" } 
+              className="rounded-full">
                 <RxLinkNone1 size={"30"} />
             </Button>
-            <Button onClick={() => navigate(`/bcad/${uID}`)} variant={"outline"} className="rounded-full">
+            <Button 
+              onClick={()=>{
+                setActive({
+                  post: false,
+                  connections: false,
+                  profile: true,
+                });
+                navigate(`/bcad/${uID}`)
+              }}
+              variant={ active.profile ? "default" : "outline" } 
+              className="rounded-full">
                 <RxAvatar size={"30"} />
             </Button>
           </div>
@@ -91,16 +164,49 @@ const renderTabletNav = () => (
     <nav className="fixed bottom-0 left-0 right-0 border-t lg:hidden md:hidden sm:flex">
       {userProfile ? (
         <div className="flex items-center justify-around py-2">
-          <Button onClick={() => navigate("/bcad/post")} variant={"outline"} className="rounded-full">
+          <Button 
+            onClick={()=>{
+              setActive({
+                post: true,
+                connections: false,
+                profile: false,
+              });
+              navigate("/bcad/post")
+            }}
+            variant={ active.post ? "default" : "outline" } 
+            className="rounded-full">
             <RxShare1 size={"20"} />
           </Button>
-          <Button onClick={() => navigate(`/bcad/${uID}/connections/`)} variant={"outline"} className="rounded-full">
+          <Button 
+            onClick={()=>{
+              setActive({
+                post: false,
+                connections: true,
+                profile: false,
+              });
+              navigate(`/bcad/${uID}/connections/`)
+            }}
+            variant={ active.connections ? "default" : "outline" } 
+            className="rounded-full">
             <RxLinkNone1 size={"20"} />
           </Button>
-          <Button onClick={() => navigate(`/bcad/${uID}`)} variant={"outline"} className="rounded-full">
+          <Button 
+            onClick={()=>{
+              setActive({
+                post: false,
+                connections: false,
+                profile: true,
+              });
+              navigate(`/bcad/${uID}`)
+            }}
+            variant={ active.profile ? "default" : "outline" } 
+            className="rounded-full">
             <RxAvatar size={"20"} />
           </Button>
-          <Button onClick={() => navigate("/logout")} variant={"destructive"} className="rounded-full">
+          <Button 
+            onClick={() => navigate("/logout")} 
+            variant={"destructive"} 
+            className="rounded-full">
             <RxExit />
           </Button>
         </div>
@@ -123,8 +229,3 @@ const renderTabletNav = () => (
 };
 
 export default Navbar;
-
-
-
-
-  

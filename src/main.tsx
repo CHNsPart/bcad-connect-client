@@ -11,6 +11,8 @@ import Login from './pages/auth/Login.tsx';
 import Profile from './pages/profile/Profile.tsx';
 import NavbarWrapper from './pages/NavbarWrapper.tsx';
 import Post from './pages/posts/Post.tsx';
+import Connections from './pages/connections/Connections.tsx';
+import { Toaster } from './components/ui/toaster.tsx';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,10 @@ const router = createBrowserRouter([
         path: ":id",
         element: <Profile />,
       },
+      {
+        path: "/bcad/:id/connections/",
+        element: <Connections />,
+      }
     ]
   },
   {
@@ -41,5 +47,6 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <RouterProvider router={router} />
+    <Toaster />
   </React.StrictMode>
 );
